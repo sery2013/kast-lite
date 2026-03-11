@@ -1,22 +1,33 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>KAST Tools | Yield + Payments</title>
-  <link rel="stylesheet" href="style.css">
+  <title>KAST Tools | Yield Optimizer & Payment Comparator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <img src="kast-logo.png" alt="KAST" class="logo" onerror="this.style.display='none'">
-    <h1>KAST Tools</h1>
+    <div class="logo-container">
+      <img src="kast-logo.png" alt="KAST" class="logo" onerror="this.style.display='none'">
+      <span class="logo-text">KAST</span>
+    </div>
+    <h1>Financial Tools</h1>
   </header>
 
   <nav class="tabs">
-    <button class="tab-btn active" data-tab="yield">📊 Yield Optimizer</button>
-    <button class="tab-btn" data-tab="payments">🌍 Payment Comparator</button>
+    <button class="tab-btn active" data-tab="yield">
+      <span class="tab-icon">📊</span>
+      Yield Optimizer
+    </button>
+    <button class="tab-btn" data-tab="payments">
+      <span class="tab-icon">🌍</span>
+      Payment Comparator
+    </button>
   </nav>
 
   <main>
@@ -25,46 +36,63 @@
       
       <!-- APY Comparison -->
       <div class="card">
-        <h3>📊 Сравнение APY хранилищ (Gauntlet Demo)</h3>
+        <h3>📊 APY Comparison (Gauntlet Demo)</h3>
         <div id="apyList" class="apy-grid"></div>
       </div>
 
       <!-- Compound Calculator -->
       <div class="card">
-        <h3>💹 Калькулятор сложного процента</h3>
-        <div class="form-row">
-          <input type="number" id="principal" placeholder="Сумма ($)" value="1000">
-          <input type="number" id="apy" placeholder="APY (%)" value="6.2">
+        <h3>💹 Compound Interest Calculator</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Initial Investment ($)</label>
+            <input type="number" id="principal" placeholder="1000" value="1000">
+          </div>
+          <div class="form-group">
+            <label>APY (%)</label>
+            <input type="number" id="apy" placeholder="6.2" value="6.2" step="0.1">
+          </div>
         </div>
-        <div class="form-row">
-          <button class="time-btn" data-years="1">1 год</button>
-          <button class="time-btn" data-years="5">5 лет</button>
-          <button class="time-btn" data-years="10">10 лет</button>
+        <div class="time-buttons">
+          <button class="time-btn" data-years="1">1 Year</button>
+          <button class="time-btn active" data-years="5">5 Years</button>
+          <button class="time-btn" data-years="10">10 Years</button>
         </div>
-        <button id="calcYield">Рассчитать</button>
+        <button id="calcYield" class="primary-btn">Calculate Returns</button>
         <div id="yieldResult" class="result"></div>
         <canvas id="yieldChart"></canvas>
-        <button id="exportChart" class="secondary-btn">📥 Экспорт графика (PNG)</button>
+        <button id="exportChart" class="secondary-btn">📥 Export Chart (PNG)</button>
       </div>
 
       <!-- Risk Adjusted -->
       <div class="card">
-        <h3>📉 Калькулятор доходности с поправкой на риск</h3>
-        <select id="riskLevel">
-          <option value="low">Низкий риск (коэф. 0.9)</option>
-          <option value="medium" selected>Средний риск (коэф. 0.75)</option>
-          <option value="high">Высокий риск (коэф. 0.5)</option>
-        </select>
-        <button id="calcRisk">Рассчитать с риском</button>
+        <h3>📉 Risk-Adjusted Returns</h3>
+        <div class="form-group">
+          <label>Risk Level</label>
+          <select id="riskLevel">
+            <option value="low">Low Risk (0.9x multiplier)</option>
+            <option value="medium" selected>Medium Risk (0.75x multiplier)</option>
+            <option value="high">High Risk (0.5x multiplier)</option>
+          </select>
+        </div>
+        <button id="calcRisk" class="primary-btn">Calculate with Risk</button>
         <div id="riskResult" class="result"></div>
       </div>
 
       <!-- Rebalance Simulator -->
       <div class="card">
-        <h3>🔄 Симулятор ребалансировки</h3>
-        <input type="number" id="rebalancePrincipal" placeholder="Сумма ($)" value="5000">
-        <input type="number" id="rebalanceFreq" placeholder="Ребалансировка (дней)" value="30">
-        <button id="calcRebalance">Запустить симуляцию</button>
+        <h3>🔄 Rebalancing Simulator</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Investment ($)</label>
+            <input type="number" id="rebalancePrincipal" placeholder="5000" value="5000">
+          </div>
+          <div class="form-group">
+            <label>Rebalance Frequency (days)</label>
+            <input type="number" id="rebalanceFreq" placeholder="30" value="30">
+          </div>
+        </div>
+        <button id="calcRebalance" class="primary-btn">Run Simulation</button>
         <div id="rebalanceResult" class="result"></div>
       </div>
     </section>
@@ -74,39 +102,49 @@
       
       <!-- Country Selector -->
       <div class="card">
-        <h3>🌍 Выбор страны (170+)</h3>
-        <input type="text" id="countrySearch" placeholder="🔍 Поиск страны...">
+        <h3>🌍 Select Country (170+)</h3>
+        <input type="text" id="countrySearch" placeholder="🔍 Search country..." class="search-input">
         <select id="countrySelect"></select>
         <div id="selectedCountry" class="country-info"></div>
       </div>
 
       <!-- Currency Converter -->
       <div class="card">
-        <h3>💱 Конвертация валют (реальные курсы)</h3>
-        <input type="number" id="amount" placeholder="Сумма" value="100">
-        <div class="form-row">
-          <select id="fromCur"></select>
-          <select id="toCur"></select>
+        <h3>💱 Currency Converter (Live Rates)</h3>
+        <div class="form-group">
+          <label>Amount</label>
+          <input type="number" id="amount" placeholder="100" value="100">
         </div>
-        <button id="convertBtn">Конвертировать</button>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>From</label>
+            <select id="fromCur"></select>
+          </div>
+          <div class="form-group">
+            <label>To</label>
+            <select id="toCur"></select>
+          </div>
+        </div>
+        <button id="convertBtn" class="primary-btn">Convert</button>
         <div id="convertResult" class="result"></div>
-        <small id="rateSource"></small>
+        <small id="rateSource" class="rate-source"></small>
       </div>
 
       <!-- Speed Comparison -->
       <div class="card">
-        <h3>⏱️ Время доставки</h3>
+        <h3>⏱️ Transfer Speed</h3>
         <div class="speed-compare">
           <div class="speed-card solana">
-            <span class="flag">🇺🇸</span>
+            <span class="speed-icon">⚡</span>
             <h4>KAST + Solana</h4>
-            <div class="time">~5 секунд</div>
+            <div class="time">~5 seconds</div>
             <div class="fee">$0.00025</div>
+            <div class="badge">Recommended</div>
           </div>
           <div class="speed-card swift">
-            <span class="flag">🏦</span>
-            <h4>Традиционный SWIFT</h4>
-            <div class="time">1-3 рабочих дня</div>
+            <span class="speed-icon">🏦</span>
+            <h4>Traditional SWIFT</h4>
+            <div class="time">1-3 business days</div>
             <div class="fee">$25-50</div>
           </div>
         </div>
@@ -114,22 +152,26 @@
 
       <!-- Fee Calculator -->
       <div class="card">
-        <h3>💸 Калькулятор комиссии</h3>
-        <input type="number" id="feeAmount" placeholder="Сумма перевода ($)" value="1000">
-        <button id="calcFee">Сравнить комиссии</button>
+        <h3>💸 Fee Calculator</h3>
+        <div class="form-group">
+          <label>Transfer Amount ($)</label>
+          <input type="number" id="feeAmount" placeholder="1000" value="1000">
+        </div>
+        <button id="calcFee" class="primary-btn">Compare Fees</button>
         <div id="feeResult" class="result"></div>
       </div>
 
       <!-- Savings Preview -->
       <div class="card">
-        <h3>📊 Предварительный просмотр сбережений</h3>
+        <h3>📊 Savings Preview</h3>
         <div id="savingsPreview"></div>
       </div>
     </section>
   </main>
 
   <footer>
-    <p>KAST Tools © 2024 | Данные предоставлены для демонстрации</p>
+    <p>KAST Tools © 2024 | Data for demonstration purposes</p>
+    <p class="footer-note">Powered by Gauntlet Risk Management</p>
   </footer>
 
   <script type="module" src="main.js"></script>
