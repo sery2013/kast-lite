@@ -1,13 +1,12 @@
-import { defineConfig } from 'vite';
-
-export default defineConfig({
-  root: '.',
-  build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-    emptyOutDir: true
+{
+  "name": "kast-2in1",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
   },
-  server: {
-    port: 3000
+  "devDependencies": {
+    "vite": "^5.4.0"
   }
-});
+}
